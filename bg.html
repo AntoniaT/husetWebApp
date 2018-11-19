@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        *{box-sizing: border-box};
+         body {
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+        }
+        #wrapper {
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: grid;
+            grid-template-areas: "logo" "music" "main";
+        }
+        nav {
+            grid-area: nav;
+            width: 100%;
+           display: flex;
+            justify-content: space-around;
+            position: fixed;
+            bottom: 0;
+            overflow: hidden;
+        }
+        
+        main {
+            grid-area: main;
+        }
+        #logo {
+            width: 30%;
+            height: 10%;
+        }
+        .logo {
+            margin: 0;
+            grid-area: logo;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            background-image: url('img/back.jpg');
+            background-size: cover;
+        }
+        .menu {
+            width: 15vw;
+        }
+        p1, p2 {
+            font-size: 80%;
+        }
+        article {
+            margin-top: 2%;
+        }
+        #music {
+            grid-area: music;
+            width: 80%;
+            margin-left: 10%;
+            overflow: hidden;
+        }
+        
+    </style>
+</head>
+
+<body><div id="wrapper">
+    <div class="logo"><img id="logo" src="img/HUSET-logo.png"></div>
+    <img id="music" src="http://angadesign.dk/KEA/huset/wp-content/uploads/2018/11/game.jpg">
+    <main></main>
+
+
+    <template>
+        <article>
+    
+            <a href=""><p1></p1><p2></p2></a>
+            <br>
+        </article>
+    </template>
+    
+   
+    </div>
+     <nav>
+    <a href="index.html"><img class="menu" src="img/ho.png"></a>
+    <a href="music.html"><img class="menu" src="img/s.png"></a>
+    <a href=""><img class="menu" src="img/bg.png"></a>
+    <a href=""><img class="menu" src="img/h.png"></a>    
+    </nav>
+</body>
+</html>
+<script>
+let template = document.querySelector("template").content;
+let parent = document.querySelector("main");
+
+function content(){
+    fetch("http://angadesign.dk/KEA/huset/wp-json/wp/v2/events?categories=9").then(res=>res.json()).then(showContent);
+}    
+    
+    function showContent(posts){
+        posts.forEach(post=>{
+            console.log(post.id);
+            const clone = template.cloneNode(true);
+            clone.querySelector("p1").textContent = post.title.rendered + " ";
+            clone.querySelector("p2").textContent = post.acf.date;
+            clone.querySelector("a").href = "details.html" + "?postid=" + post.id;
+            parent.appendChild(clone);
+        })
+    }
+    content();
+
+</script>

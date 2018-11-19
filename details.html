@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        *{box-sizing: border-box};
+         body {
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+        }
+        #wrapper {
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: grid;
+            grid-template-areas: "logo" "main" "nav";
+        }
+        nav {
+            grid-area: nav;
+            width: 100%;
+           display: flex;
+            justify-content: space-around;
+            position: fixed;
+            bottom: 0;
+            overflow: hidden;
+            background-color: white;
+        }
+        
+        main {
+            grid-area: main;
+            margin-bottom: 20%;
+            display: grid;
+            grid-template-areas: "img" "h1" "h2" "p1";
+        }
+        h2  {
+            grid-area: h2;
+            font-size: 90%;
+        }
+        #logo {
+            width: 30%;
+            height: 10%;
+        }
+        .logo {
+            margin: 0;
+            grid-area: logo;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            background-image: url('img/back.jpg');
+            background-size: cover;
+        }
+        .menu {
+            width: 15vw;
+        }
+        #pic {
+            grid-area: img;
+            width: 80%;
+            margin-left: 10%;
+            margin-top: 5%;
+           
+        }
+        h1 {
+            grid-area: h1;
+        }
+        p1 {
+            grid-area: p1;
+        }
+       
+    </style>
+</head>
+
+<body><div id="wrapper">
+    <div class="logo"><img id="logo" src="img/HUSET-logo.png"></div>
+    <main></main>
+
+    
+    <template>
+    <img id="pic" src="">
+    <h1></h1>
+        <h2></h2>
+    <p1></p1>
+        <h4></h4>
+    
+    </template>
+    
+    <nav>
+    <a href="index.html"><img class="menu" src="img/ho.png"></a>
+    <a href="music.html"><img class="menu" src="img/s.png"></a>
+    <a href="bg.html"><img class="menu" src="img/bg.png"></a>
+    <a id="huset" href=""><img class="menu" src="img/h.png"></a>    
+    </nav>
+    </div>
+</body>
+</html>
+<script>
+let template = document.querySelector("template").content;
+let parent = document.querySelector("main");
+let params = new URLSearchParams(window.location.search);
+let postID = params.get("postid");
+
+function content(){
+    fetch("http://angadesign.dk/KEA/huset/wp-json/wp/v2/events/" + postID + "?_embed").then(res=>res.json()).then(showContent);
+}    
+    
+    function showContent(post){
+            console.log(post);
+            let clone = template.cloneNode(true);
+            clone.querySelector("h1").textContent = post.title.rendered;
+          clone.querySelector("h2").textContent = post.acf.date + ", " + post.acf.time + " " + "at " + post.acf.place;
+            clone.querySelector("p1").innerHTML = post.content.rendered;
+        if(post._embedded["wp:featuredmedia"]){
+         clone.querySelector("img").src = post._embedded["wp:featuredmedia"]["0"].media_details.sizes.medium.source_url};
+        if(post.acf.price){
+        clone.querySelector("h4").textContent = "Pris: " + post.acf.price};
+        if(post.acf.buy){
+            const newA = document.createElement("a");
+            newA.textContent = "Buy ticket here";
+            newA.href = post.acf.buy;
+            clone.appendChild(newA);
+        }
+        if(post.acf.free){
+            const newh5 = document.createElement("h5");
+            newh5.textContent = "You don't need a ticket to enter this event";
+            clone.appendChild(newh5);
+        }
+            parent.appendChild(clone);
+        }
+   
+    
+   
+    content();
+
+</script>
